@@ -9,7 +9,7 @@ public class Main {
         int k = sc.nextInt();
         KMeans kMeans = new KMeans(k);
         try {
-            List<Observation> observations = DataManager.readFile("mpp4/data/iris_training 3.txt", ',');
+            List<Observation> observations = DataManager.readFile("mpp4/data/iris_training.txt", ',');
             kMeans.groupData(observations);
         } catch (IOException e) {
             throw new RuntimeException(e);

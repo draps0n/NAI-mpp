@@ -14,16 +14,31 @@ public class KMeans {
     private void initializeGroups(List<Observation> points) {
         for (int i = 0; i < k; i++) {
             centroids.add(null);
-//            centroids.add(new Point(points.get(i).getCoordinates()));
             groups.add(new ArrayList<>());
         }
 
-        int groupIndex = 0;
-        for (Observation point : points) {
+        // Inicjalizacja listy indeksów punktów i ich pomieszanie
+        List<Integer> indices = new ArrayList<>();
+        for (int i = 0; i < points.size(); i++) {
+            indices.add(i);
+        }
+        Collections.shuffle(indices);
+
+        // Przypisanie punktu do losowej grupy
+        for (int i = 0; i < points.size(); i++) {
+            int groupIndex = i % k; // Wybór losowej grupy dla punktu
+            Observation point = points.get(indices.get(i));
             groups.get(groupIndex).add(point);
             point.setGroupIndex(groupIndex);
-            groupIndex = (groupIndex + 1) % groups.size();
         }
+
+        // Nie losowy przydział
+//        int groupIndex = 0;
+//        for (Observation point : points) {
+//            groups.get(groupIndex).add(point);
+//            point.setGroupIndex(groupIndex);
+//            groupIndex = (groupIndex + 1) % groups.size();
+//        }
     }
 
     private int getIndexOfClosestCentroid(Point point) {
@@ -74,7 +89,7 @@ public class KMeans {
     }
 
     public void groupData(List<Observation> observations) {
-        // Inicjalizacja grup punktami
+        // Losowa inicjalizacja grup punktami
         initializeGroups(observations);
         int changesCounter;
         int rotation = 0;
@@ -129,7 +144,7 @@ public class KMeans {
                 distance += calculateSquareOfEuclideanDistance(observation, centroid);
             }
 
-            System.out.println("\tGroup " + (i + 1) + " sum of squared distances from centroid: " + distance);
+            System.out.println("\tGroup " + (i + 1) + "(" + group.size() + ") sum of squared distances from centroid: " + distance);
         }
         System.out.println();
     }
