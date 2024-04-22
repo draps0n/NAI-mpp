@@ -6,9 +6,9 @@ import java.util.Map;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-        List<Observation> trainingSet = DataManager.readAllObservationsFromDirectory("training-texts", ReadType.TRAINING);
-        List<Observation> testSet = DataManager.readAllObservationsFromDirectory("test-texts", ReadType.TEST);
-
+        List<Observation> trainingSet = DataManager.readAllObservationsFromDirectory("mpp3/training-texts", ReadType.TRAINING);
+        List<Observation> testSet = DataManager.readAllObservationsFromDirectory("mpp3/test-texts", ReadType.TEST);
+        
         PerceptronLayer perceptronLayer = new PerceptronLayer(DataManager.knownLanguages);
 
         perceptronLayer.trainLayer(trainingSet);
