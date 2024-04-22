@@ -1,4 +1,4 @@
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -6,7 +6,10 @@ public class Point {
     private final List<Double> coordinates;
 
     public Point(List<Double> coordinates) {
-        this.coordinates = Collections.unmodifiableList(coordinates);
+        this.coordinates = new ArrayList<>();
+        for (Double coordinate : coordinates) {
+            this.coordinates.add(Double.valueOf(coordinate.toString()));
+        }
     }
 
     public double getCoordinate(int i) {
