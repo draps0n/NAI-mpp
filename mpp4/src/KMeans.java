@@ -11,7 +11,6 @@ public class KMeans {
         this.k = k;
     }
 
-    // TODO : jak to inicjalizować?
     private void initializeCentroids(List<Observation> points) {
         Set<Integer> chosenIndices = new HashSet<>();
 
@@ -55,11 +54,32 @@ public class KMeans {
         return distance;
     }
 
+    private int assignToNewGroups(List<Observation> observations) {
+        int changesCounter = 0;
+        for (Observation observation : observations) {
+            int closestCentroidIndex = getIndexOfClosestCentroid(observation);
+
+            if (closestCentroidIndex != observation.getGroupIndex()) {
+                // Jeśli trzeba usuń ze starej grupy
+                if (observation.getGroupIndex() != -1) {
+                    groups.get(observation.getGroupIndex()).remove(observation);
+                }
+
+                // Przypisz do nowej grupy
+                observation.setGroupIndex(closestCentroidIndex);
+                groups.get(closestCentroidIndex).add(observation);
+                changesCounter++;
+            }
+        }
+
+        return changesCounter;
+    }
+
     private void updateCentroids() {
         for (int i = 0; i < k; i++) {
             List<Observation> group = groups.get(i);
 
-            if (group.isEmpty()) // TODO : co wtedy?
+            if (group.isEmpty())
                 continue;
 
             List<Double> newCentroidCoordinates = new ArrayList<>();
@@ -86,53 +106,27 @@ public class KMeans {
     public void groupData(List<Observation> observations) {
         // Losowa inicjalizacja grup punktami
         initializeCentroids(observations);
+
         int changesCounter;
         int rotation = 0;
-
         do {
-            changesCounter = 0;
-            rotation++;
-
             // Przypisanie punktów do nowych grup
-            for (Observation observation : observations) {
-                int closestCentroidIndex = getIndexOfClosestCentroid(observation);
-//                double currentDistanceToCentroid = observation.getGroupIndex() == -1 ? Double.MAX_VALUE : calculateSquareOfEuclideanDistance(
-//                        observation,
-//                        centroids.get(observation.getGroupIndex())
-//                );
-//                double foundClosestDistanceToCentroid = calculateSquareOfEuclideanDistance(
-//                        observation,
-//                        centroids.get(closestCentroidIndex)
-//                );
-
-                if (closestCentroidIndex != observation.getGroupIndex()) {
-//                if (foundClosestDistanceToCentroid < currentDistanceToCentroid) {
-
-                    // Jeśli trzeba usuń ze starej grupy
-                    if (observation.getGroupIndex() != -1) {
-                        groups.get(observation.getGroupIndex()).remove(observation);
-                    }
-
-                    // Przypisz do nowej grupy
-                    observation.setGroupIndex(closestCentroidIndex);
-                    groups.get(closestCentroidIndex).add(observation);
-                    changesCounter++;
-                }
-            }
+            changesCounter = assignToNewGroups(observations);
 
             // Określenie centroid'ów grup
             updateCentroids();
 
-            System.out.println("Rotation " + rotation + ":");
-            printGroupDistanceFromCentroid();
-
+            // Logowanie informacji
+            printGroupDistanceFromCentroid(++rotation);
         } while (changesCounter != 0);
 
         printGroups();
     }
 
-    private void printGroupDistanceFromCentroid() {
+    private void printGroupDistanceFromCentroid(int rotation) {
         double sum = 0.0;
+
+        System.out.println("Rotation " + rotation + ":");
         for (int i = 0; i < k; i++) {
             List<Observation> group = groups.get(i);
             Point centroid = centroids.get(i);
