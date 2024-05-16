@@ -125,14 +125,15 @@ public class NaiveBayes {
                 double value = observation.getCoordinate(dim);
                 probability *= calculateConditionalProbability(value, dim, possibility);
             }
+            probability *= calculateYProbability(possibility);
 
-//            System.out.println("It is " + possibility + " at " + probability * 100 + "%");
             probabilitiesMap.put(possibility, probability);
         }
 
         return findMaxProbability(probabilitiesMap);
     }
 
+    // P(X{dim}=value | Y=condition)
     private double calculateConditionalProbability(double value, int dim, String condition) {
         List<Observation> observations = dataMap.get(condition);
 
@@ -147,6 +148,7 @@ public class NaiveBayes {
 
         double probability = matchesCounter / totalAmount;
         if (probability == 0.) {
+            System.out.print("P(X" + dim + "=" + value + " | Y=" + condition + ") = ");
             System.out.print(probability + " -> ");
             matchesCounter++;
             totalAmount += digitizedTo;
@@ -154,27 +156,10 @@ public class NaiveBayes {
             System.out.println(probability);
         }
 
-        probability = (probability * calculateYProbability(condition)) / calculateXProbability(dim, value);
-
         return probability;
     }
 
-    private double calculateXProbability(int dim, double value) {
-        double valuesCounter = 0;
-        double totalSize = 0;
-        for (List<Observation> list : dataMap.values()) {
-            totalSize += list.size();
-            for (Observation observation : list) {
-                double currVal = observation.getCoordinate(dim);
-                if (currVal == value) {
-                    valuesCounter++;
-                }
-            }
-        }
-
-        return valuesCounter / totalSize;
-    }
-
+    // P(condition)
     private double calculateYProbability(String condition) {
         double probability = dataMap.get(condition).size();
         double totalSize = 0;
