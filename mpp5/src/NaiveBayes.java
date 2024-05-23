@@ -44,6 +44,7 @@ public class NaiveBayes {
             } else {
                 System.out.println("\u001B[31m" + " (expected: " + expectedPrediction + ")\u001B[0m");
             }
+            System.out.println();
         }
 
         // Ogólna precyzja
