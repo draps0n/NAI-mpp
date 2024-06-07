@@ -19,6 +19,10 @@ public class Main {
         for (long i = 0; i < Math.pow(2, set.size()); i++) {
             List<Item> subset = getSubsetOf(set, i);
 
+            if (i % 1_000_000 == 0) {
+                System.out.println(i + " checked!");
+            }
+
             int sSize = 0;
             int sVal = 0;
             for (Item item : subset) {
